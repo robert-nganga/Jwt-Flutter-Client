@@ -8,102 +8,88 @@ import 'package:jwt_sample/domain/models/user.dart';
 import 'package:jwt_sample/domain/repository/auth_repository.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
-
-
-
   @override
-  Future<Response<User>> getUserDetails() async{
-    try{
+  Future<Response<User>> getUserDetails() async {
+    try {
       var uri = Uri.http(serverUrl, "/user");
       var response = await http.get(uri);
-      if (kDebugMode) {
-        print(response.body);
-      }
-      if(response.statusCode == 200){
+      debugPrint("Get user response code ${response.statusCode}");
+      if (response.statusCode == 200) {
         return Success(User.fromJson(jsonDecode(response.body)));
       } else {
-        return Failure(response.body);
+        final message = jsonDecode(response.body)['message'] ?? "Error fetching user";
+        return Failure(message);
       }
-
-    } catch(e) {
+    } catch (e) {
       if (kDebugMode) {
         print(e);
       }
-      if(e is HttpException){
+      if (e is HttpException) {
         return Failure(e.message);
-      } else if (e is SocketException){
+      } else if (e is SocketException) {
         return Failure(e.message);
-      }else{
-        return const Failure("Unknown Error");
+      } else {
+        return const Failure("Error fetching user");
       }
-
     }
   }
 
   @override
   Future<Response<String>> login(String email, String password) async {
-    try{
-      Map<String, dynamic> body = {
-        "email": email,
-        "password": password
-      };
+    try {
+      Map<String, dynamic> body = {"email": email, "password": password};
       var uri = Uri.http(serverUrl, "/signin");
-      var response = await http.post(uri, body: body);
-      if (kDebugMode) {
-        print(response.body);
-      }
-      if(response.statusCode == 200){
+      var headers = {"Content-Type": "application/json"};
+      var bodyJson = jsonEncode(body);
+      var response = await http.post(uri, body: bodyJson, headers: headers);
+      debugPrint("Sign in response code ${response.statusCode}");
+      if (response.statusCode == 200) {
         return Success(jsonDecode(response.body)["token"]);
       } else {
-        return Failure(response.body);
+        final message = jsonDecode(response.body)['message'] ?? "Authentication error";
+        return Failure(message);
       }
-
-    } catch(e) {
+    } catch (e) {
       if (kDebugMode) {
         print(e);
       }
-      if(e is HttpException){
+      if (e is HttpException) {
         return Failure(e.message);
-      } else if (e is SocketException){
+      } else if (e is SocketException) {
         return Failure(e.message);
-      }else{
+      } else {
         return const Failure("Unknown Error");
       }
-
     }
   }
 
   @override
-  Future<Response<String>> signUp(String email, String password) async {
-    try{
-      Map<String, dynamic> body = {
-        "email": email,
-        "password": password
-      };
+  Future<Response<String>> signUp(
+      String email, String password, String name) async {
+    try {
+      Map<String, dynamic> body = {"email": email, "password": password, "name": name};
       var uri = Uri.http(serverUrl, "/signup");
-      var response = await http.post(uri, body: body);
-      if (kDebugMode) {
-        print(response.body);
-      }
-      if(response.statusCode == 200){
+      var headers = {"Content-Type": "application/json"};
+      var bodyJson = jsonEncode(body);
+      var response = await http.post(uri, body: bodyJson, headers: headers);
+      debugPrint("Sign up response code ${response.statusCode}");
+      if (response.statusCode == 200) {
         return Success(jsonDecode(response.body)["token"]);
       } else {
-        return Failure(response.body);
+        final message = jsonDecode(response.body)['message'] ?? "Authentication error";
+        return Failure(message);
       }
-
-    } catch(e) {
+    } catch (e) {
       if (kDebugMode) {
         print(e);
       }
-      if(e is HttpException){
+      if (e is HttpException) {
         return Failure(e.message);
-      } else if (e is SocketException){
+      } else if (e is SocketException) {
         return Failure(e.message);
-      }else{
+      } else {
         return const Failure("Unknown Error");
       }
-
     }
   }
-
 }

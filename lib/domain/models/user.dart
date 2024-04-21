@@ -1,4 +1,6 @@
-class User {
+import 'package:equatable/equatable.dart';
+
+class User extends Equatable {
   final String? id;
   final String? name;
   final String? email;
@@ -16,4 +18,10 @@ class User {
       due: json['due'] ?? ""
     );
   }
+
+  @override
+  List<Object?> get props => [id, name, email, amount, due];
+
+  @override
+  bool? get stringify => true;
 }

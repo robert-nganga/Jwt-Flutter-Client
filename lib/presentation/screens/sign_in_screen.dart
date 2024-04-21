@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jwt_sample/presentation/cubits/sign_in_cubit/sign_in_cubit.dart';
+import 'package:jwt_sample/presentation/screens/sign_up_screen.dart';
 import 'package:jwt_sample/presentation/utils/functions.dart';
 
 import '../widgets/loading_dialog.dart';
 import '../widgets/my_textfield.dart';
+import 'home_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -35,6 +37,7 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -42,13 +45,14 @@ class _SignInScreenState extends State<SignInScreen> {
         automaticallyImplyLeading: false,
         title: const Center(
           child: Text(
-            "Welcome",
+            "Login",
           ),
         ),
       ),
       body: BlocConsumer<SignInCubit, SignInState>(
         listener: (context, state) {
           if(state is SignInLoading){
+            FocusScope.of(context).unfocus();
             showDialog(
                 context: context,
                 builder: (context) {
@@ -58,7 +62,12 @@ class _SignInScreenState extends State<SignInScreen> {
 
           if(state is SignInSuccess){
             final token = state.token;
+            debugPrint(token);
             Navigator.pop(context);
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const HomeScreen()));
           }
 
           if (state is SignInFailure){
@@ -68,74 +77,84 @@ class _SignInScreenState extends State<SignInScreen> {
           }
         },
         builder: (context, state) {
-          return Column(
-            children: [
-              MyTextField(
-                controller: _emailController,
-                hintText: "Email",
-                obscureText: false,
-                errorText: _emailErrorText,
-                prefixIcon: const Icon(Icons.email_outlined),
-              ),
-              const SizedBox(height: 12.0),
-              MyTextField(
-                controller: _passwordController,
-                hintText: "Password",
-                obscureText: obscurePassword,
-                prefixIcon: const Icon(Icons.lock_outline),
-                errorText: _passwordErrorText,
-                suffixIcon: IconButton(
-                    onPressed: () {
-                      setState(() {
-                        obscurePassword = !obscurePassword;
-                      });
-                    },
-                    icon: Icon(obscurePassword
-                        ? Icons.visibility_outlined
-                        : Icons.visibility_off_outlined)),
-              ),
-              const SizedBox(height: 12.0),
-              MaterialButton(
-                onPressed: () {
-                  final isValid = _validateDetails();
-                  if(isValid){
-                    context.read<SignInCubit>()
-                        .signIn(email: _emailController.text, password: _passwordController.text);
-                  }
-                },
-                minWidth: double.infinity,
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ListView(
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.height * 0.16),
+                MyTextField(
+                  controller: _emailController,
+                  hintText: "Email",
+                  obscureText: false,
+                  errorText: _emailErrorText,
+                  prefixIcon: const Icon(Icons.email_outlined),
                 ),
-                child: const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text(
-                    "Submit",
+                const SizedBox(height: 12.0),
+                MyTextField(
+                  controller: _passwordController,
+                  hintText: "Password",
+                  obscureText: obscurePassword,
+                  prefixIcon: const Icon(Icons.lock_outline),
+                  errorText: _passwordErrorText,
+                  suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          obscurePassword = !obscurePassword;
+                        });
+                      },
+                      icon: Icon(obscurePassword
+                          ? Icons.visibility_outlined
+                          : Icons.visibility_off_outlined)),
+                ),
+                const SizedBox(height: 12.0),
+                MaterialButton(
+                  onPressed: () {
+                    final isValid = _validateDetails();
+                    if(isValid){
+                      context.read<SignInCubit>()
+                          .signIn(email: _emailController.text, password: _passwordController.text);
+                    }
+                  },
+                  color: Theme.of(context).primaryColor,
+                  minWidth: double.infinity,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text(
+                      "Submit",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16
+                      ),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 20.0),
-              Row(
-                children: [
-                  const Text("Don't have an account?"),
-                  const SizedBox(width: 3),
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const SignInScreen()));
-                    },
-                    child: const Text(
-                      "Register here",
-                      style: TextStyle(
-                          color: Colors.blue, fontWeight: FontWeight.bold),
-                    ),
-                  )
-                ],
-              ),
-            ],
+                const SizedBox(height: 20.0),
+                Row(
+                  children: [
+                    const Text("Don't have an account?"),
+                    const SizedBox(width: 3),
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const SignUpScreen()));
+                      },
+                      child: const Text(
+                        "Register here",
+                        style: TextStyle(
+                            color: Colors.blue, fontWeight: FontWeight.bold),
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
           );
         },
       ),
