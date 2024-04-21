@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jwt_sample/injection_container.dart';
+import 'package:jwt_sample/presentation/cubits/sign_in_cubit/sign_in_cubit.dart';
+import 'package:jwt_sample/presentation/cubits/sign_up_cubit/sign_up_cubit.dart';
 import 'package:jwt_sample/presentation/screens/sign_in_screen.dart';
 
 
@@ -14,13 +17,19 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Jwt Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightGreen),
-        useMaterial3: true,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<SignInCubit>(create: (context) => sl()),
+        BlocProvider<SignUpCubit>(create: (context) => sl()),
+      ],
+      child: MaterialApp(
+        title: 'Jwt Demo',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightGreen),
+          useMaterial3: true,
+        ),
+        home: const SignInScreen(),
       ),
-      home: const SignInScreen(),
     );
   }
 }
