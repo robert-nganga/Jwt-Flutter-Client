@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:jwt_sample/presentation/screens/signinScreen.dart';
+import 'package:jwt_sample/injection_container.dart';
+import 'package:jwt_sample/presentation/screens/sign_in_screen.dart';
 
 
-void main() {
+void main() async {
+  await initializeDependencies();
   runApp(const MyApp());
 }
 
