@@ -6,13 +6,24 @@ import 'package:jwt_sample/core/constants.dart';
 import 'package:jwt_sample/core/response.dart';
 import 'package:jwt_sample/domain/models/user.dart';
 import 'package:jwt_sample/domain/repository/auth_repository.dart';
+import 'package:jwt_sample/domain/repository/user_repository.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
+  final UserRepository userRepository;
+
+  AuthRepositoryImpl(this.userRepository);
   @override
   Future<Response<User>> getUserDetails() async {
     try {
       var uri = Uri.http(serverUrl, "/user");
-      var response = await http.get(uri);
+      final token = userRepository.getToken();
+      if(token== null){
+        return const Failure("User not found");
+      }
+      final headers = {
+        "Authorization": "Bearer $token"
+      };
+      var response = await http.get(uri, headers: headers);
       debugPrint("Get user response code ${response.statusCode}");
       if (response.statusCode == 200) {
         return Success(User.fromJson(jsonDecode(response.body)));

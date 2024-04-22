@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jwt_sample/presentation/cubits/sign_up_cubit/sign_up_cubit.dart';
 import 'package:jwt_sample/presentation/screens/home_screen.dart';
@@ -6,6 +7,8 @@ import 'package:jwt_sample/presentation/screens/sign_in_screen.dart';
 import 'package:jwt_sample/presentation/utils/functions.dart';
 import 'package:jwt_sample/presentation/widgets/my_textfield.dart';
 
+import '../../domain/repository/user_repository.dart';
+import '../../injection_container.dart';
 import '../widgets/loading_dialog.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -46,11 +49,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
         backgroundColor: Colors.transparent,
         iconTheme: const IconThemeData(color: Colors.black54),
         automaticallyImplyLeading: false,
-        title: const Center(
-          child: Text(
-            "Welcome",
-          ),
-        ),
       ),
       body: BlocConsumer<SignUpCubit, SignUpState>(listener: (context, state) {
         if (state is SignUpLoading) {
@@ -63,11 +61,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
         }
 
         if (state is SignUpSuccess) {
+          final token = state.token;
+          final UserRepository userRepository = sl();
+          userRepository.saveToken(token);
           Navigator.pop(context);
-          Navigator.push(
+          Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                  builder: (context) => const HomeScreen()));
+                  builder: (context) => const HomeScreen()), (route)=> false);
         }
 
         if (state is SignUpFailure) {
@@ -80,7 +81,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
           padding: const EdgeInsets.all(16.0),
           child: ListView(
             children: [
-              SizedBox(height: MediaQuery.of(context).size.height * 0.12),
+              const Text(
+                "Sign up",
+                style: TextStyle(
+                    fontSize: 30.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.1),
               MyTextField(
                 controller: _nameController,
                 hintText: "UserName",

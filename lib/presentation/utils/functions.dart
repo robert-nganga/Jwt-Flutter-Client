@@ -11,3 +11,14 @@ void showSnackBar(BuildContext context, String message) {
   );
   ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }
+
+String getGreetings(){
+  final hour = DateTime.now().hour;
+  if(hour < 12){
+    return "Good Morning";
+  }else if(hour < 18){
+    return "Good Afternoon";
+  }else{
+    return "Good Evening";
+  }
+}

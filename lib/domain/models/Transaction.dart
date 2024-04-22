@@ -14,9 +14,9 @@ class Transaction implements Equatable{
   factory Transaction.fromJson(Map<String, dynamic> json){
     return Transaction(
       id: json['id'] ?? "",
-      date: json['date'] ?? "",
-      amount: json['amount'] ?? "",
-      due: json['due'] ?? "",
+      date: json['date'] ?? 0,
+      amount: json['amount'] ?? 0,
+      due: json['due'] ?? 0,
       type: json['type'] ?? ""
     );
   }

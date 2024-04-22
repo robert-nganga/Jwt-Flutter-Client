@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jwt_sample/domain/repository/user_repository.dart';
 import 'package:jwt_sample/presentation/cubits/sign_in_cubit/sign_in_cubit.dart';
 import 'package:jwt_sample/presentation/screens/sign_up_screen.dart';
 import 'package:jwt_sample/presentation/utils/functions.dart';
 
+import '../../injection_container.dart';
 import '../widgets/loading_dialog.dart';
 import '../widgets/my_textfield.dart';
 import 'home_screen.dart';
@@ -43,11 +46,6 @@ class _SignInScreenState extends State<SignInScreen> {
         backgroundColor: Colors.transparent,
         iconTheme: const IconThemeData(color: Colors.black54),
         automaticallyImplyLeading: false,
-        title: const Center(
-          child: Text(
-            "Login",
-          ),
-        ),
       ),
       body: BlocConsumer<SignInCubit, SignInState>(
         listener: (context, state) {
@@ -63,11 +61,13 @@ class _SignInScreenState extends State<SignInScreen> {
           if(state is SignInSuccess){
             final token = state.token;
             debugPrint(token);
+            final UserRepository userRepository = sl();
+            userRepository.saveToken(token);
             Navigator.pop(context);
-            Navigator.push(
+            Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const HomeScreen()));
+                    builder: (context) => const HomeScreen()), (route)=> false);
           }
 
           if (state is SignInFailure){
@@ -81,7 +81,15 @@ class _SignInScreenState extends State<SignInScreen> {
             padding: const EdgeInsets.all(16.0),
             child: ListView(
               children: [
-                SizedBox(height: MediaQuery.of(context).size.height * 0.16),
+                const Text(
+                    "Sign in",
+                  style: TextStyle(
+                    fontSize: 30.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.1),
                 MyTextField(
                   controller: _emailController,
                   hintText: "Email",

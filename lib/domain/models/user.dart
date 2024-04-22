@@ -4,8 +4,8 @@ class User extends Equatable {
   final String? id;
   final String? name;
   final String? email;
-  final String? amount;
-  final String? due;
+  final int? amount;
+  final int? due;
 
   const User({this.id, this.name, this.email, this.amount, this.due});
 
