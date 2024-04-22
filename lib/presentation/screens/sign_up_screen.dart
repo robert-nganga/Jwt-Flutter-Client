@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:jwt_sample/presentation/cubits/sign_up_cubit/sign_up_cubit.dart';
 import 'package:jwt_sample/presentation/screens/home_screen.dart';
 import 'package:jwt_sample/presentation/screens/sign_in_screen.dart';
@@ -30,13 +31,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool _validateDetails() {
     setState(() {
       _emailErrorText =
-      _emailController.text.isEmpty ? "email must not be empty" : null;
+          _emailController.text.isEmpty ? "email must not be empty" : null;
       _passwordErrorText = _passwordController.text.length < 8
           ? "must not be less than 8 characters"
           : null;
-      _nameErrorText = _nameController.text.isEmpty ? "name must not be empty": null;
+      _nameErrorText =
+          _nameController.text.isEmpty ? "name must not be empty" : null;
     });
-    final isValid = _emailErrorText == null && _passwordErrorText == null && _nameErrorText == null;
+    final isValid = _emailErrorText == null &&
+        _passwordErrorText == null &&
+        _nameErrorText == null;
     return isValid;
   }
 
@@ -67,8 +71,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
           Navigator.pop(context);
           Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(
-                  builder: (context) => const HomeScreen()), (route)=> false);
+              MaterialPageRoute(builder: (context) => const HomeScreen()),
+              (route) => false);
         }
 
         if (state is SignUpFailure) {
@@ -81,13 +85,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
           padding: const EdgeInsets.all(16.0),
           child: ListView(
             children: [
-              const Text(
+              Text(
                 "Sign up",
                 style: TextStyle(
-                    fontSize: 30.0,
+                    fontSize: ScreenUtil().setSp(30),
                     fontWeight: FontWeight.bold,
-                    color: Colors.black
-                ),
+                    color: Colors.black),
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.1),
               MyTextField(
@@ -126,9 +129,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
               MaterialButton(
                 onPressed: () {
                   final isValid = _validateDetails();
-                  if(isValid){
-                    context.read<SignUpCubit>()
-                        .signUp(email: _emailController.text, password: _passwordController.text, name: _nameController.text);
+                  if (isValid) {
+                    context.read<SignUpCubit>().signUp(
+                        email: _emailController.text,
+                        password: _passwordController.text,
+                        name: _nameController.text);
                   }
                 },
                 color: Theme.of(context).primaryColor,
@@ -141,9 +146,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   padding: EdgeInsets.all(16.0),
                   child: Text(
                     "Submit",
-                    style: TextStyle(
-                      color: Colors.white
-                    ),
+                    style: TextStyle(color: Colors.white),
                   ),
                 ),
               ),

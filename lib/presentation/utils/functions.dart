@@ -18,7 +18,9 @@ String getGreetings(){
     return "Good Morning";
   }else if(hour < 18){
     return "Good Afternoon";
-  }else{
+  }else if(hour < 20){
     return "Good Evening";
+  }else{
+    return "Good Night";
   }
 }

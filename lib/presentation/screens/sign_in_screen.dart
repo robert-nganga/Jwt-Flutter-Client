@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:jwt_sample/domain/repository/user_repository.dart';
 import 'package:jwt_sample/presentation/cubits/sign_in_cubit/sign_in_cubit.dart';
 import 'package:jwt_sample/presentation/screens/sign_up_screen.dart';
@@ -81,10 +82,10 @@ class _SignInScreenState extends State<SignInScreen> {
             padding: const EdgeInsets.all(16.0),
             child: ListView(
               children: [
-                const Text(
+                Text(
                     "Sign in",
                   style: TextStyle(
-                    fontSize: 30.0,
+                    fontSize: ScreenUtil().setSp(30),
                     fontWeight: FontWeight.bold,
                     color: Colors.black
                   ),

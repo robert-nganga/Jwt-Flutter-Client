@@ -7,6 +7,7 @@ import 'package:jwt_sample/data/repository/user_repository_impl.dart';
 import 'package:jwt_sample/domain/repository/auth_repository.dart';
 import 'package:jwt_sample/domain/repository/transaction_repository.dart';
 import 'package:jwt_sample/domain/repository/user_repository.dart';
+import 'package:jwt_sample/presentation/cubits/get_transactions_cubit/get_transactions_cubit.dart';
 import 'package:jwt_sample/presentation/cubits/get_user_details_cubit/get_user_details_cubit.dart';
 import 'package:jwt_sample/presentation/cubits/sign_in_cubit/sign_in_cubit.dart';
 import 'package:jwt_sample/presentation/cubits/sign_up_cubit/sign_up_cubit.dart';
@@ -24,10 +25,11 @@ Future<void> initializeDependencies() async {
 
   sl.registerSingleton<UserRepository>(UserRepositoryImpl(box));
   sl.registerSingleton<AuthRepository>(AuthRepositoryImpl(sl()));
-  sl.registerSingleton<TransactionRepository>(TransactionRepositoryImpl());
+  sl.registerSingleton<TransactionRepository>(TransactionRepositoryImpl(sl()));
 
   sl.registerFactory<SignInCubit>(() => SignInCubit(sl()));
   sl.registerFactory<SignUpCubit>(() => SignUpCubit(sl()));
   sl.registerFactory<GetUserDetailsCubit>(() => GetUserDetailsCubit(sl()));
+  sl.registerFactory<GetTransactionsCubit>(() => GetTransactionsCubit(sl()));
 
 }

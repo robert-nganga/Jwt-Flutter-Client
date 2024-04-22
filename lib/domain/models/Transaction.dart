@@ -2,7 +2,7 @@
 
 import 'package:equatable/equatable.dart';
 
-class Transaction implements Equatable{
+class Transaction implements Equatable {
   final String? id;
   final int? date;
   final int? amount;
@@ -11,7 +11,7 @@ class Transaction implements Equatable{
 
   Transaction({this.id, this.date, this.amount, this.due, this.type});
 
-  factory Transaction.fromJson(Map<String, dynamic> json){
+  factory Transaction.fromJson(Map<String, dynamic> json) {
     return Transaction(
       id: json['id'] ?? "",
       date: json['date'] ?? 0,
